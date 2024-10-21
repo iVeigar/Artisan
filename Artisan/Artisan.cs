@@ -17,6 +17,7 @@ using ECommons;
 using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
 using ECommons.Logging;
+using ECommons.ImGuiMethods;
 using OtterGui.Classes;
 using PunishLib;
 using System;
@@ -456,6 +457,31 @@ public unsafe class Artisan : IDalamudPlugin
                 CraftingListFunctions.Paused = false;
                 break;
         }
+    }
+
+    public void ImportTeamcraftList(string importListName, string importListPreCraft, string importListItems)
+    {
+        Teamcraft.openImportWindow = false;
+        Teamcraft.importListName = importListName;
+        Teamcraft.importListPreCraft = importListPreCraft;
+        Teamcraft.importListItems = importListItems;
+        NewCraftingList? importedList = Teamcraft.ParseImport(false, true);
+        if (importedList is not null)
+        {
+            if (importedList.Name.IsNullOrEmpty())
+                importedList.Name = importedList.Recipes.FirstOrDefault().ID.NameOfRecipe();
+            importedList.SetID();
+            importedList.Save();
+
+        }
+        else
+        {
+            Notify.Error("The imported list has no items. Please check your import and try again.");
+        }
+        Teamcraft.openImportWindow = false;
+        Teamcraft.importListName = "";
+        Teamcraft.importListPreCraft = "";
+        Teamcraft.importListItems = "";
     }
 }
 
