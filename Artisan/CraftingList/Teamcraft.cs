@@ -182,7 +182,7 @@ namespace Artisan.CraftingLists
             ImGui.PopStyleColor();
         }
 
-        private static NewCraftingList? ParseImport(bool precraftQS, bool finalitemQS)
+        internal static NewCraftingList? ParseImport(bool precraftQS, bool finalitemQS)
         {
             if (string.IsNullOrEmpty(importListName) && string.IsNullOrEmpty(importListItems) && string.IsNullOrEmpty(importListPreCraft)) return null;
             NewCraftingList output = new NewCraftingList();
