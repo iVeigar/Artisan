@@ -55,6 +55,7 @@ public record class CraftState
 
 public record class StepState
 {
+    public int Id;
     public int Index;
     public int Progress;
     public int Quality;

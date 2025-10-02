@@ -28,6 +28,8 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<OutputPath>bin/Release</OutputPath>
 		<NoWarn>CS1591</NoWarn>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -88,9 +90,13 @@
     <None Update="Sounds\Time Up.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+	<EmbeddedResource Include="CraftingLogic\Solvers\Thiria\expert.wasm">
+      <LogicalName>expert.wasm</LogicalName>
+	</EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
+	<PackageReference Include="Wasmtime" Version="34.0.2" />
     <PackageReference Include="DalamudPackager" Version="13.0.0" />
     <PackageReference Include="Discord.Net.Webhook" Version="3.15.3" />
     <PackageReference Include="ECommons" Version="3.0.1.10" />
