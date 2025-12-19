@@ -46,6 +46,7 @@ namespace Artisan
         public bool DisableHighlightedAction = false;
 
         public ExpertSolverSettings ExpertSolverConfig = new();
+        public ThiriaSolverSettings ThiriaSolverConfig = new();
         public MacroSolverSettings MacroSolverConfig = new();
         public ScriptSolverSettings ScriptSolverConfig = new();
 

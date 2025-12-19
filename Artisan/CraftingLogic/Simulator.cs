@@ -56,6 +56,7 @@ public static class Simulator
     public static StepState CreateInitial(CraftState craft, int startingQuality)
         => new()
         {
+            Id = 0,
             Index = 1,
             Durability = craft.CraftDurability,
             Quality = startingQuality,
@@ -185,6 +186,7 @@ public static class Simulator
             return (ExecuteResult.CantUse, step); // can't use action because of level, insufficient cp or special conditions
 
         var next = new StepState();
+        next.Id = step.Id + 1;
         next.Index = SkipUpdates(action) ? step.Index : step.Index + 1;
         next.Progress = step.Progress + (success ? CalculateProgress(craft, step, action) : 0);
         next.Quality = step.Quality + (success ? CalculateQuality(craft, step, action) : 0);
@@ -338,7 +340,7 @@ public static class Simulator
         return false;
     }
 
-    public static bool SkipUpdates(Skills action) => action is Skills.CarefulObservation or Skills.FinalAppraisal or Skills.HeartAndSoul or Skills.MaterialMiracle;
+    public static bool SkipUpdates(Skills action) => action is Skills.CarefulObservation or Skills.FinalAppraisal or Skills.HeartAndSoul or Skills.MaterialMiracle or Skills.QuickInnovation;
     public static bool ConsumeHeartAndSoul(Skills action) => action is Skills.IntensiveSynthesis or Skills.PreciseTouch or Skills.TricksOfTrade;
 
     public static double GetSuccessRate(StepState step, Skills action)

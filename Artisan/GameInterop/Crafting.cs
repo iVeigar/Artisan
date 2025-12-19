@@ -654,6 +654,7 @@ public static unsafe class Crafting
     private static StepState BuildStepState(AddonSynthesis* synthWindow, StepState? predictedStep, CraftState craft)
     {
         var ret = new StepState();
+        ret.Id = predictedStep?.Id ?? 0;
         ret.Index = GetStepIndex(synthWindow);
         ret.Progress = GetStepProgress(synthWindow);
         ret.Quality = GetStepQuality(synthWindow);
