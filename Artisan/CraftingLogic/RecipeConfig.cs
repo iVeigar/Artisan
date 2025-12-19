@@ -282,10 +282,9 @@ public class RecipeConfig
         {
             var recipe = craft.Recipe;
             var config = this;
-            var solverHint = Simulator.SimulatorResult(recipe, config, craft, out var hintColor);
             var solver = CraftingProcessor.GetSolverForRecipe(config, craft);
 
-            if (solver.Name != "Expert Recipe Solver")
+            if (solver.Name != "Expert Recipe Solver" && solver.Name != "Thiria Expert Solver")
             {
                 if (craft.MissionHasMaterialMiracle && solver.Name == "Standard Recipe Solver" && P.Config.UseMaterialMiracle)
                     ImGuiEx.TextWrapped($"This would use Material Miracle, which is not compatible with the simulator.");
@@ -293,7 +292,10 @@ public class RecipeConfig
                 if (solver.Name == "Raphael Recipe Solver" && !RaphaelCache.HasSolution(craft, out _))
                     ImGuiEx.TextWrapped($"Unable to generate a simulator without a Raphael solution generated.");
                 else
+                {
+                    var solverHint = Simulator.SimulatorResult(recipe, config, craft, out var hintColor);
                     ImGuiEx.TextWrapped(hintColor, solverHint);
+                }
             }
             else
                 ImGuiEx.TextWrapped($"Please run this recipe in the simulator for results.");
