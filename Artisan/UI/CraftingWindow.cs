@@ -183,7 +183,7 @@ namespace Artisan.UI
 
         private void OnSolverStarted(Lumina.Excel.Sheets.Recipe recipe, SolverRef solver, CraftState craft, StepState initialStep)
         {
-            if (P.Config.AutoMode && solver)
+            if (P.Config.AutoMode && solver && solver.Name != "Expert Recipe Solver" && solver.Name != "Thiria Expert Solver")
             {
                 var estimatedTime = SolverUtils.EstimateCraftTime(solver.Clone()!, craft, initialStep.Quality);
                 var count = P.Config.CraftingX && Endurance.Enable ? P.Config.CraftX : 1;

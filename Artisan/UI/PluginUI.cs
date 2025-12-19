@@ -770,6 +770,18 @@ namespace Artisan.UI
                 }
             }
 
+            bool openThiria = ImGui.CollapsingHeader("Thiria Expert Solver Settings");
+            if (P.Config.ThiriaSolverConfig.expertIcon is not null)
+            {
+                ImGui.SameLine();
+                ImGui.Image(P.Config.ThiriaSolverConfig.expertIcon.Handle, new(P.Config.ExpertSolverConfig.expertIcon.Width * ImGuiHelpers.GlobalScaleSafe, ImGui.GetItemRectSize().Y), new(0, 0), new Vector2(1, 1), new(0.94f, 0.57f, 0f, 1f));
+            }
+            if (openThiria)
+            {
+                if (P.Config.ThiriaSolverConfig.Draw())
+                    P.Config.Save();
+            }
+
             if (ImGui.CollapsingHeader("Raphael Solver Settings"))
             {
                 if (P.Config.RaphaelSolverConfig.Draw())
