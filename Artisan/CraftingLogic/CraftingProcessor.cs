@@ -8,6 +8,7 @@ using ECommons.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using static Artisan.CraftingLogic.Solvers.ExpertSolverProfiles;
 
 namespace Artisan.CraftingLogic;
@@ -41,6 +42,7 @@ public static class CraftingProcessor
         SolverDefinitions.Add(new StandardSolverDefinition());
         SolverDefinitions.Add(new ProgressOnlySolverDefinition());
         SolverDefinitions.Add(new ExpertSolverDefinition());
+        SolverDefinitions.Add(new ThiriaSolverDefinition());
         SolverDefinitions.Add(new MacroSolverDefinition());
         //SolverDefinitions.Add(new ScriptSolverDefinition());
         SolverDefinitions.Add(new RaphaelSolverDefintion());
@@ -177,11 +179,15 @@ public static class CraftingProcessor
 
         SolverStarted?.Invoke(recipe, ActiveSolver, craft, initialStep);
 
-        _nextRec = _activeSolver.Solve(craft, initialStep);
-        if (Simulator.CannotUseAction(craft, initialStep, _nextRec.Action, out string reason))
-            DuoLog.Error($"Unable to use {_nextRec.Action.NameOfAction()}: {reason}");
-        if (_nextRec.Action != Skills.None)
-            RecommendationReady?.Invoke(recipe, ActiveSolver, craft, initialStep, _nextRec);
+        Task.Run(() => _activeSolver.Solve(craft, initialStep))
+            .ContinueWith(task =>
+            {
+                _nextRec = task.Result;
+                if (Simulator.CannotUseAction(craft, initialStep, _nextRec.Action, out string reason))
+                    DuoLog.Error($"Unable to use {_nextRec.Action.NameOfAction()}: {reason}");
+                if (_nextRec.Action != Skills.None)
+                    RecommendationReady?.Invoke(recipe, ActiveSolver, craft, initialStep, _nextRec);
+            });
     }
 
     private static void OnCraftAdvanced(Lumina.Excel.Sheets.Recipe? recipe, CraftState craft, StepState step)
@@ -191,18 +197,21 @@ public static class CraftingProcessor
             return;
         if (_nextRec.Action != Skills.None && _nextRec.Action != step.PrevComboAction)
             Svc.Log.Warning($"Previous action was different from recommendation: recommended {_nextRec.Action}, used {step.PrevComboAction}");
-
+        
         if (P.Config.DebugTrackConditionData && craft.CraftExpert && step.PrevComboAction != Skills.FinalAppraisal && step.PrevComboAction != Skills.HeartAndSoul && step.PrevCondition != CraftData.Condition.Robust && step.PrevCondition != CraftData.Condition.GoodOmen)
         {
             P.Config.DebugTrackConditions.AddRecipeCondition(craft, step);
         }
-
-        _nextRec = _activeSolver.Solve(craft, step);
-        Svc.Log.Debug($"Next rec is: {_nextRec.Action} on {_nextRec.Comment}");
-        if (Simulator.CannotUseAction(craft, step, _nextRec.Action, out string reason))
-            DuoLog.Error($"Unable to use {_nextRec.Action.NameOfAction()}: {reason}");
-        if (_nextRec.Action != Skills.None)
-            RecommendationReady?.Invoke(recipe, ActiveSolver, craft, step, _nextRec);
+        Task.Run(() => _activeSolver.Solve(craft, step))
+            .ContinueWith(task =>
+            {
+                _nextRec = task.Result;
+                Svc.Log.Debug($"Next rec is: {_nextRec.Action} on {_nextRec.Comment}");
+                if (Simulator.CannotUseAction(craft, step, _nextRec.Action, out string reason))
+                    DuoLog.Error($"Unable to use {_nextRec.Action.NameOfAction()}: {reason}");
+                if (_nextRec.Action != Skills.None)
+                    RecommendationReady?.Invoke(recipe, ActiveSolver, craft, step, _nextRec);
+            });
     }
 
     private static void OnCraftFinished(Lumina.Excel.Sheets.Recipe? recipe, CraftState craft, StepState finalStep, bool cancelled)
