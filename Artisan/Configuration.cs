@@ -50,6 +50,7 @@ namespace Artisan
         public ExpertSolverProfiles ExpertSolverProfiles = new(); // handles all expert profiles, including the global one
         public MacroSolverSettings MacroSolverConfig = new();
         public ScriptSolverSettings ScriptSolverConfig = new();
+        public ThiriaSolverSettings ThiriaSolverConfig = new();
 
         public Dictionary<uint, RecipeConfig> RecipeConfigs = new();
 

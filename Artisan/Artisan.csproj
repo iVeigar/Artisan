@@ -10,8 +10,6 @@
 
 	<PropertyGroup>
 		<DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
-		<DalamudPluginPath>$(appdata)\XIVLauncher\installedPlugins\Artisan\$(version)</DalamudPluginPath>
-		<DalamudDevPlugins>$(appdata)\XIVLauncher\devPlugins\Artisan\</DalamudDevPlugins>
 		<AssemblyName>Artisan</AssemblyName>
 		<RootNamespace>Artisan</RootNamespace>
 		<PackageId>Artisan</PackageId>
@@ -30,6 +28,8 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<OutputPath>bin/Release</OutputPath>
 		<NoWarn>CS1591</NoWarn>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -94,9 +94,13 @@
     <None Update="Sounds\Time Up.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+	<EmbeddedResource Include="CraftingLogic\Solvers\Thiria\expert.wasm">
+      <LogicalName>expert.wasm</LogicalName>
+	</EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
+	<PackageReference Include="Wasmtime" Version="34.0.2" />
     <PackageReference Include="DalamudPackager" Version="13.1.0" />
     <PackageReference Include="Discord.Net.Webhook" Version="3.15.3" />
     <PackageReference Include="ECommons" Version="3.2.0.11" />
@@ -106,7 +110,6 @@
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="Reloaded.Memory" Version="9.4.2" />
     <PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" />
-    <ProjectReference Include="..\ECommons\ECommons\ECommons.csproj" />
     <ProjectReference Include="..\KamiToolKit\KamiToolKit.csproj" />
     <ProjectReference Include="..\OtterGui\OtterGui.csproj" />
     <ProjectReference Include="..\PunishLib\PunishLib\PunishLib.csproj" />
