@@ -46,6 +46,7 @@ public class ThiriaSolver : Solver
             Skills.None or Skills.TouchCombo or Skills.TouchComboRefined => "invalid",
             Skills.TricksOfTrade => "tricksOfTheTrade",
             Skills.MaterialMiracle => "invalid", // todo 奇迹之材会立即改变球色
+            Skills.SteadyHand => "stellarSteadyHand",
             _ => JsonNamingPolicy.CamelCase.ConvertName(action.ToString())
         };
     }
@@ -86,12 +87,12 @@ public class ThiriaSolver : Solver
                 craft.CraftProgressModifier / 100f,
                 craft.CraftQualityDivider / 100f,
                 craft.CraftQualityModifier / 100f,
-                true);
+                true,
+                (!craft.MissionHasSteadyHand || craft.CurrentSteadyHandCharges < 1) ? -1 : 0);
 
             if (!session.Start())
                 throw new Exception(result?.message ?? "求解器会话启动失败");
             result = session.Request(null);
-            Svc.Log.Debug($"result: {result.actionName} {result.message}");
         }
         else if (session.Started)
         {
@@ -101,18 +102,22 @@ public class ThiriaSolver : Solver
                 condition = JsonNamingPolicy.CamelCase.ConvertName(step.Condition.ToString()),
                 success = !step.PrevActionFailed
             });
-            Svc.Log.Debug($"result: {result.actionName} {result.message}");
         }
         else
+        {
+            Svc.Log.Error("求解器未成功初始化，无法继续求解");
+            Svc.Log.Error($"step.Index = {step.Index} (expect 1)\nstep.Condition = {step.Condition} (expect Normal)\ncraft.StatCP {(craft.StatCP == step.RemainingCP ? "" : "!")}= step.RemainingCP (expect =)\ncraft.Specialist = {craft.Specialist}{(step.HeartAndSoulAvailable ? $"\nstep.HeartAndSoulAvailable = {step.HeartAndSoulAvailable} (expect true)\nstep.QuickInnoLeft = {step.QuickInnoLeft} (expect >0)\nstep.CarefulObservationLeft = {step.CarefulObservationLeft} (expect 3)" : "")}");
             return new(Skills.None, "似乎不是从零开始求解，不会给出建议");
 
+        }
 
         if (!result.actionName.IsNullOrEmpty())
         {
             if (result.actionName.Equals("TricksOfTheTrade", StringComparison.OrdinalIgnoreCase))
                 result.actionName = "TricksOfTrade";
-            return new(Enum.Parse<Skills>(result.actionName, true), result.message);
-
+            else if (result.actionName.Equals("stellarSteadyHand", StringComparison.OrdinalIgnoreCase))
+                result.actionName = "SteadyHand";
+            return new(Enum.Parse<Skills>(result.actionName, true), result.message.IsNullOrEmpty() ? "thiria" : result.message);
         }
         else
         {

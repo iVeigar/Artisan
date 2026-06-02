@@ -48,11 +48,11 @@ public class ThiriaSession
         }
     }
 
-    public void SetItem(int level, int durability, int progress, int quality, float progressDivider, float progressModifier, float qualityDivider, float qualityModifier, bool forceExpert)
+    public void SetItem(int level, int durability, int progress, int quality, float progressDivider, float progressModifier, float qualityDivider, float qualityModifier, bool forceExpert, int actionMode)
     {
         try
         {
-            exports.setItem(level, durability, progress, quality, progressDivider, progressModifier, qualityDivider, qualityModifier, forceExpert ? 1 : 0);
+            exports.setItem(level, durability, progress, quality, progressDivider, progressModifier, qualityDivider, qualityModifier, forceExpert ? 1 : 0, actionMode);
         }
         catch (Exception ex)
         {

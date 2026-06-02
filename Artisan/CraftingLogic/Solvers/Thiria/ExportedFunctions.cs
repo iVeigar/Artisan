@@ -5,7 +5,7 @@ namespace ThiriaExpertSolver.Thiria;
 public class ExportedFunctions
 {
     public readonly Action<int, int, int, int, double, int, int> setPlayer; // level cp 作业 加工 红球倍率 掌握 专家
-    public readonly Action<int, int, int, int, float, float, float, float, int> setItem;  // 物品等级 耐久 进展 品质 pdiv plevel qdiv qlevel safety
+    public readonly Action<int, int, int, int, float, float, float, float, int, int> setItem;  // 物品等级 耐久 进展 品质 pdiv plevel qdiv qlevel safety actionMode(stellar action)
     public readonly Func<int> action_getNumElements; // return count
     public readonly Func<int, int> action_getShortName; // return a ptr
     public readonly Func<int> condition_getNumElements; // return count
@@ -36,7 +36,7 @@ public class ExportedFunctions
         //_initialize = instance.GetAction(nameof(_initialize)) ?? throw new Exception($"GetFunction({nameof(_initialize)}) failed!");
 
         setPlayer = instance.GetFunction(nameof(setPlayer))?.WrapAction<int, int, int, int, double, int, int>() ?? throw new Exception($"GetFunction({nameof(setPlayer)}) failed!");
-        setItem = instance.GetFunction(nameof(setItem))?.WrapAction<int, int, int, int, float, float, float, float, int>() ?? throw new Exception($"GetFunction({nameof(setItem)}) failed!");
+        setItem = instance.GetFunction(nameof(setItem))?.WrapAction<int, int, int, int, float, float, float, float, int, int>() ?? throw new Exception($"GetFunction({nameof(setItem)}) failed!");
         
         action_getNumElements = instance.GetFunction<int>(nameof(action_getNumElements)) ?? throw new Exception($"GetFunction({nameof(action_getNumElements)}) failed!");
         action_getShortName = instance.GetFunction<int, int>(nameof(action_getShortName)) ?? throw new Exception($"GetFunction({nameof(action_getShortName)}) failed!");
