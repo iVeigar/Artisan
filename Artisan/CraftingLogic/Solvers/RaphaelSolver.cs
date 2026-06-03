@@ -37,7 +37,7 @@ namespace Artisan.CraftingLogic.Solvers
             {
                 return new MacroSolver(output!, craft);
             }
-            return craft.CraftExpert ? new ExpertSolver() : new StandardSolver();
+            return craft.CraftExpert ? new ThiriaSolver() : new StandardSolver();
         }
 
         public IEnumerable<ISolverDefinition.Desc> Flavours(CraftState craft)

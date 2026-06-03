@@ -15,7 +15,7 @@ public class ThiriaSolverDefinition : ISolverDefinition
     public IEnumerable<ISolverDefinition.Desc> Flavours(CraftState craft)
     {
         if (craft.CraftExpert)
-            yield return new(this, 0, 3, "Thiria Expert Solver", craft.StatLevel < 70 ? "Requires Level 70" : "");
+            yield return new(this, 0, 0, "Thiria Expert Solver", craft.StatLevel < 70 ? "Requires Level 70" : "");
     }
 
     public Solver Create(CraftState craft, int flavour) => new ThiriaSolver();
@@ -56,9 +56,9 @@ public class ThiriaSolver : Solver
             && step.Condition == Condition.Normal // 白球
             && craft.StatCP == step.RemainingCP // 最终确认不加工次但消耗cp
             && (!craft.Specialist || // 专家技能不加工次不消耗cp
-                (step.HeartAndSoulAvailable // 专心致志
-                && step.QuickInnoLeft > 0 // 快速改革
-                && step.CarefulObservationLeft == 3)); // 设计变动
+                (!step.HeartAndSoulActive // 未使用专心致志
+                && step.InnovationLeft == 0)); // 未使用快速改革
+                // && step.CarefulObservationLeft == 3)); // 设计变动使用次数无法被检测到
     }
     private static unsafe bool HasEnoughDelineations() =>
         InventoryManager.Instance()->GetInventoryItemCount(28724) >= 5;
@@ -106,9 +106,8 @@ public class ThiriaSolver : Solver
         else
         {
             Svc.Log.Error("求解器未成功初始化，无法继续求解");
-            Svc.Log.Error($"step.Index = {step.Index} (expect 1)\nstep.Condition = {step.Condition} (expect Normal)\ncraft.StatCP {(craft.StatCP == step.RemainingCP ? "" : "!")}= step.RemainingCP (expect =)\ncraft.Specialist = {craft.Specialist}{(step.HeartAndSoulAvailable ? $"\nstep.HeartAndSoulAvailable = {step.HeartAndSoulAvailable} (expect true)\nstep.QuickInnoLeft = {step.QuickInnoLeft} (expect >0)\nstep.CarefulObservationLeft = {step.CarefulObservationLeft} (expect 3)" : "")}");
+            Svc.Log.Error($"step.Index = {step.Index} (expect 1)\nstep.Condition = {step.Condition} (expect Normal)\ncraft.StatCP {(craft.StatCP == step.RemainingCP ? "" : "!")}= step.RemainingCP (expect ==)\ncraft.Specialist = {craft.Specialist}{(craft.Specialist ? $"\nstep.HeartAndSoulActive = {step.HeartAndSoulActive} (expect false)\nstep.InnovationLeft = {step.InnovationLeft} (expect 0)" : "")}");
             return new(Skills.None, "似乎不是从零开始求解，不会给出建议");
-
         }
 
         if (!result.actionName.IsNullOrEmpty())
