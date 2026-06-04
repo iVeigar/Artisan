@@ -16,6 +16,8 @@ public class ThiriaSolverDefinition : ISolverDefinition
     {
         if (craft.CraftExpert)
             yield return new(this, 0, 0, "Thiria Expert Solver", craft.StatLevel < 70 ? "Requires Level 70" : "");
+        else
+            yield return new(this, 0, 3, "Thiria Expert Solver", craft.StatLevel < 70 ? "Requires Level 70" : "");
     }
 
     public Solver Create(CraftState craft, int flavour) => new ThiriaSolver();
