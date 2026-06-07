@@ -90,7 +90,7 @@ public class ThiriaSolver : Solver
                 craft.CraftQualityDivider / 100f,
                 craft.CraftQualityModifier / 100f,
                 true,
-                (!craft.MissionHasSteadyHand || craft.CurrentSteadyHandCharges < 1) ? -1 : 0);
+                (!craft.MissionHasSteadyHand || craft.CurrentSteadyHandCharges < 1) ? -1 : 1);
 
             if (!session.Start())
                 throw new Exception(result?.message ?? "求解器会话启动失败");
